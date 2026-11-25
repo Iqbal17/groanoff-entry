@@ -49,12 +49,27 @@ Pass 2: the draft's middle read "it was sick of being walked all
    and taken for granted is exactly a ladder's life. "Tired of
    being taken for granted" keeps the complaint honest, so the
    pun at the end earns the groan.
+
+Revision note (Pass 3, 26 Nov 2026): the entry line is unchanged —
+   same text, same em-dash, same 82 characters. The refactor gives
+   the line one home: main() now reads it through the get_entry()
+   helper instead of reaching for the module constant directly, so
+   the text lives in exactly one place. The existing check_gate()
+   guard still validates the line (1–140 chars, non-blank, single
+   line) before anything is written, and the output bytes are
+   byte-identical to before.
 """
 
 import os
 
 ENTRY = "My ladder quit its job — it was tired of being taken for granted, rung after rung."
 MAX_CHARS = 140
+
+
+def get_entry():
+    """Return the entry line. One home for the text: main() reads it
+    through here instead of reaching for the module constant."""
+    return ENTRY
 
 
 def check_gate(text):
@@ -75,9 +90,10 @@ def entry_path():
 
 
 def main():
-    check_gate(ENTRY)
+    text = get_entry()
+    check_gate(text)
     with open(entry_path(), "w", encoding="utf-8") as f:
-        f.write(ENTRY + "\n")
+        f.write(text + "\n")
 
 
 if __name__ == "__main__":
